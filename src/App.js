@@ -5,6 +5,7 @@ import { Component } from 'react';
 //stateful component
 class App extends Component {
   state = {
+    counter: 0,
     posts: [
       {
         id: 1,
@@ -24,11 +25,31 @@ class App extends Component {
     ],
   };
 
+  componentDidMount() {
+    this.handleTimeOut();
+  }
+
+  componentDidUpdate() {
+    //loop
+    // this.handleTimeOut();
+  }
+
+  handleTimeOut = () => {
+    const { posts, counter } = this.state;
+
+    posts[0].title = 'Alterando título';
+
+    setTimeout(() => {
+      this.setState({ posts, counter: counter + 1 });
+    }, 1000);
+  };
+
   render() {
-    const { posts } = this.state;
+    const { posts, counter } = this.state;
 
     return (
       <div className="App">
+        <h1>{counter}</h1>
         {posts.map((post) => (
           <div key={post.id}>
             <h1>{post.title}</h1>
