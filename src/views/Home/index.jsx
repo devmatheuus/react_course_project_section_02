@@ -11,7 +11,7 @@ export const Home = () => {
   const [posts, setPosts] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [page, setPage] = useState(0);
-  const [postsPerPage] = useState(50);
+  const [postsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState('');
 
   const loadPosts = useCallback(async (page, postsPerPage) => {
@@ -67,8 +67,8 @@ export const Home = () => {
         <div className="button-container">
           <Button
             disabled={noMorePosts}
-            text="Mais posts"
-            loadMorePosts={loadMorePosts}
+            text="Load more"
+            onClick={loadMorePosts}
           />
         </div>
       )}
