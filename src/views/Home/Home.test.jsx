@@ -47,6 +47,16 @@ describe("<Home/>", () => {
 
         const noPostsFound = screen.getByText("No posts found");
         await waitForElementToBeRemoved(noPostsFound);
-        screen.debug();
+
+        expect.assertions(3);
+
+        const search = screen.getByPlaceholderText(/type your search/i);
+        expect(search).toBeInTheDocument();
+
+        const images = screen.getAllByRole("img", { name: /title/i });
+        expect(images.length).toBe(2);
+
+        const button = screen.getByRole("button", { name: /load more/i });
+        expect(button).toBeInTheDocument();
     });
 });
