@@ -27,11 +27,9 @@ export const Home = () => {
 
     const loadMorePosts = () => {
         const nextPage = page + postsPerPage;
-        const nextPosts = allPosts.slice(nextPage + postsPerPage);
+        const nextPosts = allPosts.slice(nextPage, nextPage + postsPerPage);
 
-        posts.push(...nextPosts);
-
-        setPosts(posts);
+        setPosts((posts) => [...posts, ...nextPosts]);
         setPage(nextPage);
     };
 

@@ -1,4 +1,5 @@
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
@@ -58,5 +59,51 @@ describe("<Home/>", () => {
 
         const button = screen.getByRole("button", { name: /load more/i });
         expect(button).toBeInTheDocument();
+    });
+
+    it("should search for posts", async () => {
+        render(<Home />);
+
+        const noPostsFound = screen.getByText("No posts found");
+        await waitForElementToBeRemoved(noPostsFound);
+
+        const search = screen.getByPlaceholderText(/type your search/i);
+
+        expect.assertions(13);
+
+        expect(search).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "title1" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "title2" })).toBeInTheDocument();
+        expect(screen.queryByRole("heading", { name: "title3" })).not.toBeInTheDocument();
+
+        userEvent.type(search, "title1");
+        expect(screen.getByRole("heading", { name: "title1" })).toBeInTheDocument();
+        expect(screen.queryByRole("heading", { name: "title2" })).not.toBeInTheDocument();
+        expect(screen.queryByRole("heading", { name: "title3" })).not.toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "title1" })).toBeInTheDocument();
+
+        userEvent.clear(search);
+        expect(screen.getByRole("heading", { name: "title1" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "title2" })).toBeInTheDocument();
+        expect(screen.queryByRole("heading", { name: "title3" })).not.toBeInTheDocument();
+
+        userEvent.type(search, "invalid post");
+        expect(screen.queryByRole("img", { name: /title/i })).not.toBeInTheDocument();
+        expect(screen.getByText(/no posts found/i)).toBeInTheDocument();
+    });
+
+    it("should load more posts on button click", async () => {
+        render(<Home />);
+
+        const noPostsFound = screen.getByText("No posts found");
+        await waitForElementToBeRemoved(noPostsFound);
+
+        // expect.assertions(3);
+
+        const button = screen.getByRole("button", { name: /load more/i });
+
+        userEvent.click(button);
+        expect(screen.getAllByRole("heading")).toHaveLength(3);
+        expect(button).toBeDisabled();
     });
 });
