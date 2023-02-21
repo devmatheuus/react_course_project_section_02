@@ -1,67 +1,38 @@
-import "./styles.css";
+import { useCallback, useState } from "react";
 
-import { useCallback, useEffect, useState } from "react";
+import { useFetch } from "../../hooks/useFetch";
 
-import { Button } from "../../components/Button";
-import { Posts } from "../../components/Posts";
-import { TextInput } from "../../components/TextInput";
-import { fetchPosts } from "../../utils/fetchPosts";
+const POSTS_URL = "https://jsonplaceholder.typicode.com/posts";
 
 export const Home = () => {
-    const [posts, setPosts] = useState([]);
-    const [allPosts, setAllPosts] = useState([]);
-    const [page, setPage] = useState(0);
-    const [postsPerPage] = useState(2);
-    const [searchValue, setSearchValue] = useState("");
+    const [postId, setPostId] = useState("");
+    const [result, loading] = useFetch(`${POSTS_URL}${postId && "/" + postId}`, {
+        headers: {
+            abc: "1" + postId,
+        },
+    });
 
-    const loadPosts = useCallback(async (page, postsPerPage) => {
-        const postsAndPhotos = await fetchPosts();
-
-        setPosts(postsAndPhotos.slice(page, postsPerPage));
-        setAllPosts(postsAndPhotos);
+    const handlePostId = useCallback((id) => {
+        setPostId(id);
     }, []);
 
-    useEffect(() => {
-        loadPosts(0, postsPerPage);
-    }, [loadPosts, postsPerPage]);
-
-    const loadMorePosts = () => {
-        const nextPage = page + postsPerPage;
-        const nextPosts = allPosts.slice(nextPage, nextPage + postsPerPage);
-
-        setPosts((posts) => [...posts, ...nextPosts]);
-        setPage(nextPage);
-    };
-
-    const handleChange = (e) => {
-        const { value } = e.target;
-
-        setSearchValue(value);
-    };
-
-    const noMorePosts = page + postsPerPage >= allPosts.length;
-
-    const filteredPosts = searchValue
-        ? allPosts.filter((post) => {
-              return post.title.toLowerCase().includes(searchValue.toLowerCase());
-          })
-        : posts;
-
     return (
-        <section className="container">
-            <div className="search-container">
-                {!!searchValue && <h1>Search value: {searchValue}</h1>}
+        <>
+            {loading && <p>Carregando...</p>}
 
-                <TextInput handleChange={handleChange} searchValue={searchValue} />
-            </div>
+            {result?.length > 0 &&
+                !loading &&
+                result.map((p) => (
+                    <p key={p.id} onClick={() => handlePostId(p.id)}>
+                        {p.title}
+                    </p>
+                ))}
 
-            {filteredPosts.length > 0 ? <Posts posts={filteredPosts} /> : <p>No posts found</p>}
-
-            {!searchValue && (
-                <div className="button-container">
-                    <Button disabled={noMorePosts} text="Load more" onClick={loadMorePosts} />
-                </div>
+            {result && !loading && !("length" in result) && (
+                <p key={result?.id} onClick={() => handlePostId("")}>
+                    {result?.title}
+                </p>
             )}
-        </section>
+        </>
     );
 };
