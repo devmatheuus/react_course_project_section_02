@@ -15,7 +15,7 @@ export const CounterContextProvider = ({ children }) => {
 
     const actions = useRef(buildActions(dispatch));
 
-    return <CounterContext.Provider value={[state, actions]}>{children}</CounterContext.Provider>;
+    return <CounterContext.Provider value={[state, actions.current]}>{children}</CounterContext.Provider>;
 };
 
 export const useCounterContext = () => {
