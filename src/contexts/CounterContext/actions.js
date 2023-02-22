@@ -3,6 +3,7 @@ const PREFIX = "CounterContext";
 export const INCREASE = `${PREFIX}/INCREASE`;
 export const DECREASE = `${PREFIX}/DECREASE`;
 export const RESET = `${PREFIX}/RESET`;
+export const SET_COUNTER = `${PREFIX}/SET_COUNTER`;
 export const ASYNC_INCREASE_START = `${PREFIX}/ASYNC_INCREASE_START`;
 export const ASYNC_INCREASE_END = `${PREFIX}/ASYNC_INCREASE_END`;
 export const ASYNC_INCREASE_ERROR = `${PREFIX}/ASYNC_INCREASE_ERROR`;

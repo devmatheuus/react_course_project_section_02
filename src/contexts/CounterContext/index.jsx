@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-export const initialValue = {
+export const initialState = {
     counter: 0,
     loading: false,
 };
@@ -8,7 +8,7 @@ export const initialValue = {
 const CounterContext = createContext();
 
 export const CounterContextProvider = ({ children }) => {
-    const [state, dispatch] = useState(initialValue);
+    const [state, dispatch] = useState(initialState);
 
     return <CounterContext.Provider value={[state, dispatch]}>{children}</CounterContext.Provider>;
 };
