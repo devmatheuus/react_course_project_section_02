@@ -1,19 +1,16 @@
 import "./styles.css";
 
+import { Button } from "../../components/Button";
+import { Heading } from "../../components/Heading";
 import { useCounterContext } from "../../contexts/CounterContext";
 
 export const Home = () => {
-    const [state, dispatch] = useCounterContext();
-    const { counter } = state;
-    const {
-        current: { increase },
-    } = dispatch;
+    const [, actions] = useCounterContext();
 
     return (
-        // useEffect(() => {}, [state]);
         <section className="container">
-            <h1>{counter}</h1>
-            <button onClick={() => increase(dispatch)}>INCREASE</button>
+            <Heading />
+            <Button onButtonClick={actions.increase}>INCREASE</Button>
         </section>
     );
 };
