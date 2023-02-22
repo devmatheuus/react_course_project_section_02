@@ -1,4 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useReducer, useRef } from "react";
+
+import { buildActions } from "./build-actions";
+import { counterReducer } from "./reducer";
 
 export const initialState = {
     counter: 0,
@@ -8,9 +11,11 @@ export const initialState = {
 const CounterContext = createContext();
 
 export const CounterContextProvider = ({ children }) => {
-    const [state, dispatch] = useState(initialState);
+    const [state, dispatch] = useReducer(counterReducer, initialState);
 
-    return <CounterContext.Provider value={[state, dispatch]}>{children}</CounterContext.Provider>;
+    const actions = useRef(buildActions(dispatch));
+
+    return <CounterContext.Provider value={[state, actions]}>{children}</CounterContext.Provider>;
 };
 
 export const useCounterContext = () => {
